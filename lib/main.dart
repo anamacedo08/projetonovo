@@ -23,8 +23,12 @@ Future<void> main() async {
   }
 
   // Garantir inicialização do banco antes de iniciar o app
-  final dbService = DatabaseService();
-  await dbService.database;
+  try {
+    final dbService = DatabaseService();
+    await dbService.database;
+  } catch (e) {
+    debugPrint("Erro fatal ao inicializar banco de dados: $e");
+  }
 
   final authService = AuthService();
   
@@ -64,12 +68,11 @@ class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   Future<List<Map<String, dynamic>>> _loadProducts() async {
-    final db = await DatabaseService().database;
-    // Verificação extra se a tabela existe
     try {
+      final db = await DatabaseService().database;
       return await db.query('products', where: 'excluido = 0', limit: 3);
     } catch (e) {
-      debugPrint("Erro ao carregar produtos: $e");
+      debugPrint("Erro ao carregar produtos na vitrine: $e");
       return [];
     }
   }
@@ -158,6 +161,9 @@ class HomeScreen extends StatelessWidget {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
+          if (snapshot.hasError) {
+             return Center(child: Text('Erro ao carregar vitrine: ${snapshot.error}'));
+          }
           final products = snapshot.data ?? [];
           if (products.isEmpty) {
             return const Center(child: Text('Nenhum produto encontrado na vitrine.'));
@@ -181,7 +187,10 @@ class HomeScreen extends StatelessWidget {
                     Expanded(
                       child: Container(
                         color: Colors.grey[300],
-                        child: const Center(child: Icon(Icons.image, size: 50, color: Colors.grey)),
+                        width: double.infinity,
+                        child: (p['imagem'] != null && p['imagem'].toString().startsWith('http'))
+                            ? Image.network(p['imagem'], fit: BoxFit.cover, errorBuilder: (_, __, ___) => const Icon(Icons.broken_image))
+                            : const Center(child: Icon(Icons.image, size: 50, color: Colors.grey)),
                       ),
                     ),
                     Padding(

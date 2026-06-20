@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../../core/database/database_service.dart';
 import '../../../../core/services/auth_service.dart';
 import '../../domain/usecases/create_order_usecase.dart';
 
@@ -12,17 +11,16 @@ class CreateOrderPage extends StatefulWidget {
 }
 
 class _CreateOrderPageState extends State<CreateOrderPage> {
-  Map<String, dynamic>? _selectedProduct;
+  final _descriptionController = TextEditingController();
   final _addressController = TextEditingController();
+  final _contactController = TextEditingController();
   bool _isLoading = false;
 
-  Future<List<Map<String, dynamic>>> _getProducts() async {
-    final db = await DatabaseService().database;
-    return await db.query('products', where: 'excluido = 0');
-  }
-
   Future<void> _submitOrder() async {
-    if (_selectedProduct == null) return;
+    if (_descriptionController.text.isEmpty) {
+       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Por favor, descreva seu pedido artesanal.')));
+       return;
+    }
     
     setState(() => _isLoading = true);
     try {
@@ -32,19 +30,21 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
       await useCase.executar(
         authService.usuarioAtual!['id'],
         {
-          'itens': [_selectedProduct!['nome']],
-          'valor_total': _selectedProduct!['preco'],
+          'descricao_pedido': _descriptionController.text,
         },
-        {'rua': _addressController.text},
+        {
+          'endereco_entrega': _addressController.text,
+          'numero_contato': _contactController.text,
+        },
       );
 
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Pedido criado!')));
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Sua encomenda foi enviada para avaliação!')));
         Navigator.pop(context);
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Erro: $e')));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Erro: ${e.toString()}')));
       }
     } finally {
       if (mounted) setState(() => _isLoading = false);
@@ -54,35 +54,46 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Novo Pedido')),
-      body: Padding(
+      appBar: AppBar(title: const Text('Encomenda Sob Medida')),
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            FutureBuilder<List<Map<String, dynamic>>>(
-              future: _getProducts(),
-              builder: (context, snapshot) {
-                if (!snapshot.hasData) return const CircularProgressIndicator();
-                final products = snapshot.data!;
-                return DropdownButtonFormField<Map<String, dynamic>>(
-                  decoration: const InputDecoration(labelText: 'Selecione o Produto'),
-                  items: products.map((p) => DropdownMenuItem(
-                    value: p,
-                    child: Text(p['nome']),
-                  )).toList(),
-                  onChanged: (val) => setState(() => _selectedProduct = val),
-                );
-              },
+            const Text(
+              'Descreva seu produto artesanal sob medida:',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            ),
+            const SizedBox(height: 8),
+            TextField(
+              controller: _descriptionController,
+              decoration: const InputDecoration(
+                hintText: 'Ex: Vaso de cerâmica azul com detalhes dourados...',
+                border: OutlineInputBorder(),
+              ),
+              maxLines: 5,
             ),
             const SizedBox(height: 16),
             TextField(
               controller: _addressController,
-              decoration: const InputDecoration(labelText: 'Endereço de Entrega'),
+              decoration: const InputDecoration(labelText: 'Endereço de Entrega', border: OutlineInputBorder()),
+            ),
+            const SizedBox(height: 16),
+            TextField(
+              controller: _contactController,
+              decoration: const InputDecoration(labelText: 'Número de Contato', border: OutlineInputBorder()),
+              keyboardType: TextInputType.phone,
             ),
             const SizedBox(height: 24),
             _isLoading 
-              ? const CircularProgressIndicator()
-              : ElevatedButton(onPressed: _submitOrder, child: const Text('Confirmar Pedido')),
+              ? const Center(child: CircularProgressIndicator())
+              : SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: _submitOrder, 
+                    child: const Text('Enviar para Avaliação'),
+                  ),
+                ),
           ],
         ),
       ),

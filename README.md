@@ -3,23 +3,23 @@
 Sistema completo para gestão de produtos artesanais.
 
 ## Soluções Implementadas
-- **Resiliência de Dados**: Correção do erro de inicialização de tabelas via `onOpen` e inicialização síncrona no `main`.
-- **Área Administrativa**: Telas funcionais para gestão de produtos, atendentes e visualização de relatórios de vendas.
-- **Área do Cliente**: Fluxo funcional para criação de novos pedidos diretamente pela aplicação.
-- **Autenticação**: Telas de login e cadastro totalmente integradas ao banco de dados local.
+- **Resiliência de Dados**: Correção do schema do banco de dados (colunas `ativo` em `users` e `descricao_pedido` em `orders`).
+- **Renderização de Mídia**: Correção do erro de carregamento de imagens na vitrine inicial, com suporte a URLs externas.
+- **Área Administrativa**: 
+    - **CRUD de Produtos**: Gerenciamento funcional com suporte a links de imagem.
+    - **CRUD de Atendentes**: Cadastro e inativação de atendentes corrigidos.
+- **Área do Cliente**: Encomendas sob medida com descrição personalizada.
 
 ## Tecnologias
 - Flutter
 - SQLite (Sqflite)
 - Provider
-- Firebase Core/Messaging (Simulado)
 
 ## Execução
 1. `flutter pub get`
 2. `flutter run`
 
 ## Testes
-Para garantir a estabilidade das regras de negócio:
-`flutter test` (Recomendado rodar individualmente para evitar travas de banco em FFI).
+`flutter test`
 - `flutter test test/core_test.dart`
 - `flutter test test/usecases_test.dart`

@@ -31,9 +31,6 @@ class DatabaseService {
     
     String path = join(await getDatabasesPath(), dbName);
     
-    // Deletar o banco se ele estiver corrompido ou sem tabelas (opcional, para debug)
-    // if (kDebugMode) await deleteDatabase(path);
-
     return await openDatabase(
       path,
       version: dbVersion,
@@ -43,10 +40,9 @@ class DatabaseService {
         await _semearProdutosVitrine(db);
       },
       onUpgrade: (db, oldVersion, newVersion) async {
-        await _executarScriptsMigracao(db);
+        await _executarScriptCriacaoTabelas(db);
       },
       onOpen: (db) async {
-        // Garantir tabelas
         await _executarScriptCriacaoTabelas(db);
       }
     );
@@ -84,41 +80,70 @@ class DatabaseService {
         data_envio TEXT,
         valor_total REAL,
         dados_logistica TEXT,
+        descricao_pedido TEXT,
+        endereco_entrega TEXT,
+        numero_contato TEXT,
         FOREIGN KEY (cliente_id) REFERENCES users (id)
       )
     ''');
+    
+    // Garantir que a coluna ativo existe na tabela users se ela já existia
+    try {
+      await db.execute('ALTER TABLE users ADD COLUMN ativo INTEGER DEFAULT 1');
+    } catch (_) {}
+
+    // Garantir que a coluna descricao_pedido existe se a tabela já existia (migração manual simplificada)
+    try {
+      await db.execute('ALTER TABLE orders ADD COLUMN descricao_pedido TEXT');
+    } catch (_) {}
+    try {
+      await db.execute('ALTER TABLE orders ADD COLUMN endereco_entrega TEXT');
+    } catch (_) {}
+    try {
+      await db.execute('ALTER TABLE orders ADD COLUMN numero_contato TEXT');
+    } catch (_) {}
   }
 
   Future<void> _semearAdminRoot(Database db) async {
-    await db.insert('users', {
-      'role': 'admin',
-      'email': 'admin@artesanal.com',
-      'password_hash': 'senhaPadraoHash' 
-    });
+    final List<Map<String, dynamic>> existing = await db.query(
+      'users',
+      where: 'email = ?',
+      whereArgs: ['admin@artesanal.com'],
+    );
+    if (existing.isEmpty) {
+      await db.insert('users', {
+        'role': 'admin',
+        'email': 'admin@artesanal.com',
+        'password_hash': 'senhaPadraoHash',
+        'ativo': 1
+      });
+    }
   }
 
   Future<void> _semearProdutosVitrine(Database db) async {
-    await db.insert('products', {
-      'nome': 'Vaso de Cerâmica',
-      'descricao': 'Vaso feito à mão com acabamento rústico.',
-      'imagem': 'assets/vaso.png',
-      'preco': 45.0
-    });
-    await db.insert('products', {
-      'nome': 'Cesto de Palha',
-      'descricao': 'Cesto trançado ideal para organização.',
-      'imagem': 'assets/cesto.png',
-      'preco': 30.0
-    });
-    await db.insert('products', {
-      'nome': 'Luminária de Macramê',
-      'descricao': 'Luminária artesanal para ambientes modernos.',
-      'imagem': 'assets/luminaria.png',
-      'preco': 60.0
-    });
+    final List<Map<String, dynamic>> existing = await db.query('products');
+    if (existing.isEmpty) {
+      await db.insert('products', {
+        'nome': 'Vaso de Cerâmica',
+        'descricao': 'Vaso feito à mão com acabamento rústico.',
+        'imagem': 'https://images.unsplash.com/photo-1578749556568-bc2c40e68b61',
+        'preco': 45.0
+      });
+      await db.insert('products', {
+        'nome': 'Cesto de Palha',
+        'descricao': 'Cesto trançado ideal para organização.',
+        'imagem': 'https://images.unsplash.com/photo-1578749556568-bc2c40e68b61',
+        'preco': 30.0
+      });
+      await db.insert('products', {
+        'nome': 'Luminária de Macramê',
+        'descricao': 'Luminária artesanal para ambientes modernos.',
+        'imagem': 'https://images.unsplash.com/photo-1578749556568-bc2c40e68b61',
+        'preco': 60.0
+      });
+    }
   }
 
   Future<void> _executarScriptsMigracao(Database db) async {
-    // Implementar migrações se necessário
   }
 }

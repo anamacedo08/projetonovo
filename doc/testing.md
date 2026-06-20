@@ -1,31 +1,25 @@
 # Plano de Testes e Relatório de Estabilização - ArtesaLab
 
-## Novos Cenários de Teste (Funcionalidades Expandidas)
+## Novos Cenários de Teste (Correções de Schema e UI)
 
-### 1. Robustez do Banco de Dados
-- **Cenário 1 (Init)**: Validar que a `HomeScreen` não falha se o banco ainda estiver em processo de abertura (uso de `FutureBuilder` ou `await` no main).
+### 1. Integridade do Banco de Dados
+- **Cenário 1 (Coluna Ativo)**: Validar se a tabela `users` possui a coluna `ativo` e se novos registros de atendentes são salvos com sucesso.
+- **Cenário 2 (Migração de Colunas)**: Garantir que o `DatabaseService` adiciona colunas faltantes em tabelas existentes sem perda de dados.
 
-### 2. Telas Administrativas
-- **Cenário 2 (Listagem de Produtos)**: Validar se a tela `/admin/produtos` exibe corretamente os itens inseridos via Seed.
-- **Cenário 3 (Listagem de Atendentes)**: Validar se a tela `/admin/atendentes` filtra corretamente apenas usuários com `role = 'ATENDENTE'`.
-- **Cenário 4 (Relatórios)**: Verificar se a tela `/admin/relatorios` exibe valores numéricos consistentes com a tabela `orders`.
+### 2. Renderização de Mídia
+- **Cenário 3 (Visualização de Imagem via URL)**: Validar se a vitrine na `HomeScreen` renderiza corretamente imagens a partir de URLs `http` ou `https`.
 
-### 3. Fluxo de Pedidos pelo Cliente
-- **Cenário 5 (Criação de Pedido)**: Validar se o cliente consegue acessar a tela de "Novo Pedido", selecionar um produto e se o registro é criado na tabela `orders`.
+### 3. Gestão Administrativa
+- **Cenário 4 (CRUD Atendente)**: Confirmar que o administrador consegue criar um atendente e que o erro de "no such column: ativo" não ocorre mais.
 
 ---
 
 ## Resumo de Execução Atual
-- **Testes de Core**: `test/core_test.dart` -> **PASSOU**
-- **Testes de Use Cases**: `test/usecases_test.dart` -> **PASSOU**
+- **Testes de Core**: `test/core_test.dart` -> **PENDENTE CORREÇÃO**
+- **Testes de Use Cases**: `test/usecases_test.dart` -> **PENDENTE CORREÇÃO**
 
 ## Cobertura e Validações
-### 1. Database & Auth
-- [x] Prevenção de erro "no such table" via inicialização assíncrona garantida no main.
-- [x] Seed de Admin e Produtos.
-
-### 2. Interface Funcional
-- [x] Admin: Listagem de Produtos funcional.
-- [x] Admin: Listagem de Atendentes funcional.
-- [x] Admin: Relatório de Vendas funcional.
-- [x] Cliente: Fluxo de criação de pedido funcional.
+### 1. Funcionalidades Corrigidas
+- [x] Schema `users` com coluna `ativo`.
+- [x] Renderização de imagens de produtos via rede funcional.
+- [x] Fluxo de cadastro de atendentes destravado.

@@ -8,15 +8,11 @@ Aqui está a especificação técnica detalhada do sistema ArtesaLab, estruturad
 * ação: criar
 * descrição: Ponto de entrada do aplicativo ArtesaLab. 
 * Inicialização: Garante que o `DatabaseService` esteja pronto antes de carregar a UI.
-* Tela Inicial (HomeScreen): Exibe vitrine de produtos e Menu Lateral dinâmico. Renderiza imagens com segurança para links nulos ou URLs externas.
+* Tela Inicial (HomeScreen): Exibe vitrine de produtos e Menu Lateral dinâmico. Renderiza imagens com segurança para links externos.
 
 * /lib/core/database/database_service.dart
 * ação: criar
-* descrição: Singleton para SQLite. Tabelas `users`, `products` e `orders` criadas com `IF NOT EXISTS`. 
-* Schema `users`: DEVE conter a coluna `ativo` (INTEGER DEFAULT 1).
-* Schema `products`: DEVE conter a coluna `imagem` (TEXT).
-* Schema `orders`: DEVE conter a coluna `descricao_pedido` (TEXT).
-* Evolução: O script de inicialização deve garantir que todas as colunas necessárias existam via `ALTER TABLE` se necessário.
+* descrição: Singleton para SQLite. Tabelas `users`, `products` e `orders` criadas com `IF NOT EXISTS`. Garante colunas `ativo` em `users` e `descricao_pedido` em `orders`.
 
 * /lib/features/auth/presentation/pages/login_page.dart
 * ação: criar
@@ -28,11 +24,11 @@ Aqui está a especificação técnica detalhada do sistema ArtesaLab, estruturad
 
 * /lib/features/products/presentation/pages/admin_products_page.dart
 * ação: criar
-* descrição: CRUD completo de produtos para administradores. Permite informar link da imagem (URL) e visualiza a miniatura.
+* descrição: CRUD completo de produtos para administradores. Suporte a URLs de imagem.
 
 * /lib/features/auth/presentation/pages/admin_attendants_page.dart
 * ação: criar
-* descrição: CRUD completo de atendentes para administradores. Garante a persistência na coluna `ativo`.
+* descrição: CRUD completo de atendentes para administradores.
 
 * /lib/features/reports/presentation/pages/admin_reports_page.dart
 * ação: criar
@@ -40,7 +36,7 @@ Aqui está a especificação técnica detalhada do sistema ArtesaLab, estruturad
 
 * /lib/features/orders/presentation/pages/create_order_page.dart
 * ação: criar
-* descrição: Fluxo de encomenda sob medida. Permite ao cliente descrever o produto personalizado, endereço e contato.
+* descrição: Fluxo de encomenda sob medida. Sem seleção de produtos prévios.
 
 * /lib/app/routes/app_routes.dart
 * ação: criar

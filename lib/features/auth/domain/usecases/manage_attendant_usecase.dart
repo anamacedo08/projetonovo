@@ -6,10 +6,17 @@ class ManageAttendantUseCase {
   Future<void> criarAtendente(Map<String, dynamic> dados) async {
     final db = await _dbService.database;
     
-    // Supõe-se que a verificação de permissão Admin é feita na Controller/UI
+    // Validar campos obrigatórios
+    if (dados['email'] == null || dados['email'].isEmpty) {
+      throw Exception('Email é obrigatório');
+    }
+    if (dados['password'] == null || dados['password'].isEmpty) {
+      throw Exception('Senha é obrigatória');
+    }
+
     await db.insert('users', {
       'email': dados['email'],
-      'password_hash': dados['password'],
+      'password_hash': dados['password'], // Em produção, usar hash
       'role': 'ATENDENTE',
       'ativo': 1,
     });

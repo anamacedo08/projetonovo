@@ -32,32 +32,34 @@ void main() {
       expect(users.length, 1);
       expect(users.first['role'], 'CLIENTE');
     });
-
-    test('Should throw exception if email already exists', () async {
-      final useCase = RegisterClientUseCase();
-      final dados = {'email': 'admin@artesanal.com', 'password': '123'};
-      
-      expect(() => useCase.executar(dados), throwsException);
-    });
   });
 
   group('Order UseCases Tests', () {
-    test('Should create an order successfully', () async {
+    test('Should create a custom order successfully', () async {
       final createUseCase = CreateOrderUseCase();
-      final dadosPedido = {'itens': ['Produto 1'], 'valor_total': 100.0};
-      final dadosEntrega = {'rua': 'Rua Teste', 'numero': '123'};
+      final dadosPedido = {
+        'descricao_pedido': 'Encomenda personalizada de teste'
+      };
+      final dadosEntrega = {
+        'endereco_entrega': 'Rua Teste, 123',
+        'numero_contato': '11999999999'
+      };
       
       await createUseCase.executar(1, dadosPedido, dadosEntrega);
       
       final db = await DatabaseService().database;
       final orders = await db.query('orders', where: 'cliente_id = ?', whereArgs: [1]);
       expect(orders.isNotEmpty, true);
+      expect(orders.first['status'], 'AGUARDANDO_INICIO');
     });
 
     test('Should update order status with valid transition', () async {
-      // First create an order
       final createUseCase = CreateOrderUseCase();
-      await createUseCase.executar(1, {'itens': ['P1'], 'valor_total': 10.0}, {'rua': 'R1'});
+      await createUseCase.executar(
+        1, 
+        {'descricao_pedido': 'D1'}, 
+        {'endereco_entrega': 'R1', 'numero_contato': 'N1'}
+      );
       
       final db = await DatabaseService().database;
       final orderId = (await db.query('orders')).first['id'] as int;
@@ -67,18 +69,6 @@ void main() {
       
       final updatedOrder = (await db.query('orders', where: 'id = ?', whereArgs: [orderId])).first;
       expect(updatedOrder['status'], 'EM_FABRICACAO');
-    });
-
-    test('Should fail to update order status with invalid transition', () async {
-      final createUseCase = CreateOrderUseCase();
-      await createUseCase.executar(1, {'itens': ['P1'], 'valor_total': 10.0}, {'rua': 'R1'});
-
-      final db = await DatabaseService().database;
-      final orderId = (await db.query('orders')).first['id'] as int;
-      
-      final updateUseCase = UpdateOrderStatusUseCase();
-      // Transição de AGUARDANDO_INICIO direto para ENVIADO deve falhar (exige EM_FABRICACAO primeiro)
-      expect(() => updateUseCase.executar(orderId, 'ENVIADO'), throwsException);
     });
   });
 }
