@@ -1,17 +1,38 @@
-# projetonovo
+# Artesanal App
 
-A new Flutter project.
+Sistema para gestão artesanal com suporte a Flutter Web e Mobile.
 
-## Getting Started
+## Tecnologias
+- Flutter
+- SQLite (Sqflite)
+- Firebase (Messaging)
+- Provider (Gestão de Estado)
+- DotEnv (Configurações)
 
-This project is a starting point for a Flutter application.
+## Configuração
+1. Instale as dependências:
+   ```bash
+   flutter pub get
+   ```
+2. Configure o arquivo `.env` com suas chaves:
+   ```env
+   APP_ENV=development
+   DB_NAME=artesanal.db
+   DB_VERSION=1
+   ```
+3. Execute o projeto:
+   ```bash
+   flutter run -d chrome # Para Web
+   ```
 
-A few resources to get you started if this is your first Flutter project:
+## Testes
+Para executar os testes automatizados:
+```bash
+flutter test
+```
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Arquitetura
+O projeto segue os princípios da Clean Architecture, com separação clara entre Domain, Core e Presentation.
+- **Core**: Serviços base como Banco de Dados e Autenticação.
+- **Features**: Funcionalidades isoladas com seus próprios UseCases e Controllers.
+- **App**: Configurações globais e rotas.

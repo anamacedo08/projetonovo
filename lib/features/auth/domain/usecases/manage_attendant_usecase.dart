@@ -1,14 +1,27 @@
+import '../../../../core/database/database_service.dart';
+
 class ManageAttendantUseCase {
+  final DatabaseService _dbService = DatabaseService();
+
   Future<void> criarAtendente(Map<String, dynamic> dados) async {
-    // verificarPermissaoAdmin()
-    // novoAtendente = EntidadeAtendente(dados: dados, papel: 'ATENDENTE', ativo: verdadeiro)
-    // UserRepository.salvar(novoAtendente)
-    print('Criando atendente: ${dados['email']}');
+    final db = await _dbService.database;
+    
+    // Supõe-se que a verificação de permissão Admin é feita na Controller/UI
+    await db.insert('users', {
+      'email': dados['email'],
+      'password_hash': dados['password'],
+      'role': 'ATENDENTE',
+      'ativo': 1,
+    });
   }
 
   Future<void> inativarAtendente(int id) async {
-    // verificarPermissaoAdmin()
-    // UserRepository.atualizacaoLogica(id, ativo: falso)
-    print('Inativando atendente: $id');
+    final db = await _dbService.database;
+    await db.update(
+      'users',
+      {'ativo': 0},
+      where: 'id = ?',
+      whereArgs: [id],
+    );
   }
 }

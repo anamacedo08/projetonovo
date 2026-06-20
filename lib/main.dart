@@ -13,11 +13,11 @@ Future<void> main() async {
   // Carregar variáveis de ambiente
   await dotenv.load(fileName: ".env");
 
-  // Inicializar Firebase (Se as configurações estiverem presentes)
+  // Inicializar Firebase (opcional, conforme spec "Se as configurações estiverem presentes")
   try {
     await Firebase.initializeApp();
   } catch (e) {
-    print("Firebase não inicializado: $e");
+    debugPrint("Firebase não inicializado: $e");
   }
 
   // Inicializar serviços core
@@ -44,7 +44,7 @@ class AppWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final authService = Provider.of<AuthService>(context, listen: false);
+    final authService = Provider.of<AuthService>(context);
 
     return MaterialApp(
       title: 'Artesanal App',
@@ -53,7 +53,19 @@ class AppWidget extends StatelessWidget {
         useMaterial3: true,
       ),
       onGenerateRoute: (settings) => AppRoutes.gerarRota(settings, authService),
-      home: const Scaffold(body: Center(child: Text('Bem-vindo ao Artesanal'))),
+      home: const HomeScreen(),
+    );
+  }
+}
+
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Artesanal')),
+      body: const Center(child: Text('Bem-vindo ao Artesanal')),
     );
   }
 }

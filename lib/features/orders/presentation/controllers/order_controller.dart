@@ -1,25 +1,34 @@
 import 'package:flutter/foundation.dart';
+import '../../../../core/database/database_service.dart';
 
 enum OrderState { loading, completed, error }
 
 class OrderController extends ChangeNotifier {
-  OrderState _estado = OrderState.completed;
-  List<dynamic> _pedidos = [];
+  OrderState estado = OrderState.loading;
+  List<Map<String, dynamic>> pedidos = [];
+  String? mensagemErro;
 
-  OrderState get estado => _estado;
-  List<dynamic> get pedidos => _pedidos;
+  final DatabaseService _dbService = DatabaseService();
 
   Future<void> carregarMeusPedidos(int usuarioId) async {
-    _estado = OrderState.loading;
+    estado = OrderState.loading;
     notifyListeners();
 
-    // Simulação de chamada ao UseCase
-    // resultado = GetOrdersUseCase.executar(usuarioId)
-    await Future.delayed(const Duration(seconds: 1)); // Simular delay
-    
-    _pedidos = []; // Preencher com dados reais
-    _estado = OrderState.completed;
-    
+    try {
+      final db = await _dbService.database;
+      final List<Map<String, dynamic>> result = await db.query(
+        'orders',
+        where: 'cliente_id = ?',
+        whereArgs: [usuarioId],
+      );
+      
+      pedidos = result;
+      estado = OrderState.completed;
+    } catch (e) {
+      estado = OrderState.error;
+      mensagemErro = e.toString();
+    }
+
     notifyListeners();
   }
 }

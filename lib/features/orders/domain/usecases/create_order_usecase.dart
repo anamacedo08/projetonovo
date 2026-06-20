@@ -1,19 +1,25 @@
+import '../../../../core/database/database_service.dart';
+
 class CreateOrderUseCase {
-  Future<void> executar(Map<String, dynamic> dadosPedido, Map<String, dynamic> dadosEntrega) async {
-    // validarParametrosPersonalizacao(dadosPedido)
-    // validarEndereco(dadosEntrega)
+  final DatabaseService _dbService = DatabaseService();
 
-    /*
-    pedido = EntidadePedido(
-      cliente: AuthService.usuarioAtual,
-      produtos: dadosPedido.itens,
-      endereco: dadosEntrega,
-      status: 'AGUARDANDO_INICIO',
-      dataCriacao: DateTime.now()
-    )
-    */
+  Future<void> executar(int clienteId, Map<String, dynamic> dadosPedido, Map<String, dynamic> dadosEntrega) async {
+    final db = await _dbService.database;
+    
+    // Validações simplificadas
+    if (dadosPedido['itens'] == null || (dadosPedido['itens'] as List).isEmpty) {
+      throw Exception('Pedido sem itens');
+    }
+    if (dadosEntrega['rua'] == null) {
+      throw Exception('Endereço inválido');
+    }
 
-    // OrderRepository.salvar(pedido)
-    print('Pedido criado para entrega em: ${dadosEntrega['rua']}');
+    await db.insert('orders', {
+      'cliente_id': clienteId,
+      'status': 'AGUARDANDO_INICIO',
+      'data_criacao': DateTime.now().toIso8601String(),
+      'valor_total': dadosPedido['valor_total'],
+      'dados_logistica': dadosEntrega.toString(), // Simplificado
+    });
   }
 }

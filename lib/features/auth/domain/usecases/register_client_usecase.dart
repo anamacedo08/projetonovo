@@ -1,18 +1,29 @@
+import '../../../../core/database/database_service.dart';
+
 class RegisterClientUseCase {
-  // Simulação de dependência UserRepository
-  // final UserRepository _userRepository;
+  final DatabaseService _dbService = DatabaseService();
 
-  // RegisterClientUseCase(this._userRepository);
+  Future<void> executar(Map<String, dynamic> dadosCliente) async {
+    final db = await _dbService.database;
+    
+    // Verificar se email já existe
+    final List<Map<String, dynamic>> existing = await db.query(
+      'users',
+      where: 'email = ?',
+      whereArgs: [dadosCliente['email']],
+    );
 
-  Future<bool> executar(Map<String, dynamic> dadosCliente) async {
-    // se dadosCliente.email ja existe:
-    //   retornar ErroConflito
+    if (existing.isNotEmpty) {
+      throw Exception('ErroConflito: Email já cadastrado');
+    }
 
-    // hash = encriptar(dadosCliente.senha)
-    // novoCliente = EntidadeCliente(dados: dadosCliente, senha: hash, papel: 'CLIENTE')
+    // Hash simplificado conforme spec
+    final String hash = dadosCliente['password']; // Em produção, encriptar
 
-    // UserRepository.salvar(novoCliente)
-    print('Registrando cliente: ${dadosCliente['email']}');
-    return true;
+    await db.insert('users', {
+      'email': dadosCliente['email'],
+      'password_hash': hash,
+      'role': 'CLIENTE',
+    });
   }
 }
