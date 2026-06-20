@@ -1,26 +1,25 @@
 # ArtesaLab
 
-Sistema para gestão de produtos artesanais.
+Sistema completo para gestão de produtos artesanais.
+
+## Soluções Implementadas
+- **Resiliência de Dados**: Correção do erro de inicialização de tabelas via `onOpen` e inicialização síncrona no `main`.
+- **Área Administrativa**: Telas funcionais para gestão de produtos, atendentes e visualização de relatórios de vendas.
+- **Área do Cliente**: Fluxo funcional para criação de novos pedidos diretamente pela aplicação.
+- **Autenticação**: Telas de login e cadastro totalmente integradas ao banco de dados local.
 
 ## Tecnologias
 - Flutter
 - SQLite (Sqflite)
-- Firebase (Messaging)
-- Provider (Gestão de Estado)
+- Provider
+- Firebase Core/Messaging (Simulado)
 
-## Configuração
-1. Instale as dependências: `flutter pub get`
-2. Execute o app: `flutter run`
-
-## Funcionalidades
-- **Vitrine Dinâmica**: Visualização de produtos artesanais cadastrados no banco.
-- **Login e Cadastro**: Telas dedicadas para autenticação e registro de novos clientes.
-- **Menu por Perfil**: Opções de navegação variam de acordo com o nível de acesso (Admin, Atendente, Cliente, Visitante).
-- **Gestão de Pedidos**: Fluxo completo desde a criação até a atualização de status (Backend simulado).
+## Execução
+1. `flutter pub get`
+2. `flutter run`
 
 ## Testes
-Para garantir a estabilidade do sistema, execute:
-```bash
-flutter test
-```
-Os testes cobrem persistência, lógica de negócio e autenticação.
+Para garantir a estabilidade das regras de negócio:
+`flutter test` (Recomendado rodar individualmente para evitar travas de banco em FFI).
+- `flutter test test/core_test.dart`
+- `flutter test test/usecases_test.dart`

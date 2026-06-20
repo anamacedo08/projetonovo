@@ -31,6 +31,9 @@ class DatabaseService {
     
     String path = join(await getDatabasesPath(), dbName);
     
+    // Deletar o banco se ele estiver corrompido ou sem tabelas (opcional, para debug)
+    // if (kDebugMode) await deleteDatabase(path);
+
     return await openDatabase(
       path,
       version: dbVersion,
@@ -42,12 +45,16 @@ class DatabaseService {
       onUpgrade: (db, oldVersion, newVersion) async {
         await _executarScriptsMigracao(db);
       },
+      onOpen: (db) async {
+        // Garantir tabelas
+        await _executarScriptCriacaoTabelas(db);
+      }
     );
   }
 
   Future<void> _executarScriptCriacaoTabelas(Database db) async {
     await db.execute('''
-      CREATE TABLE users (
+      CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         role TEXT,
         email TEXT UNIQUE,
@@ -57,7 +64,7 @@ class DatabaseService {
     ''');
     
     await db.execute('''
-      CREATE TABLE products (
+      CREATE TABLE IF NOT EXISTS products (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         nome TEXT,
         descricao TEXT,
@@ -68,7 +75,7 @@ class DatabaseService {
     ''');
 
     await db.execute('''
-      CREATE TABLE orders (
+      CREATE TABLE IF NOT EXISTS orders (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         cliente_id INTEGER,
         status TEXT,

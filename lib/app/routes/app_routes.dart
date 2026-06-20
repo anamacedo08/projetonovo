@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import '../../core/services/auth_service.dart';
 import '../../features/auth/presentation/pages/login_page.dart';
 import '../../features/auth/presentation/pages/register_page.dart';
+import '../../features/auth/presentation/pages/admin_attendants_page.dart';
+import '../../features/products/presentation/pages/admin_products_page.dart';
+import '../../features/reports/presentation/pages/admin_reports_page.dart';
+import '../../features/orders/presentation/pages/create_order_page.dart';
 
 class AppRoutes {
   static Route<dynamic> gerarRota(RouteSettings settings, AuthService authService) {
@@ -12,8 +16,8 @@ class AppRoutes {
       return MaterialPageRoute(builder: (_) => const RotaAcessoNegado());
     }
 
-    if (rotaDestino != null && rotaDestino.startsWith('/atendente') && papel == 'CLIENTE') {
-      return MaterialPageRoute(builder: (_) => const RotaAcessoNegado());
+    if (rotaDestino != null && rotaDestino.startsWith('/pedidos') && papel == 'VISITANTE') {
+      return MaterialPageRoute(builder: (_) => const LoginPage());
     }
 
     switch (rotaDestino) {
@@ -22,11 +26,13 @@ class AppRoutes {
       case '/cadastro':
         return MaterialPageRoute(builder: (_) => const RegisterPage());
       case '/admin/produtos':
-        return MaterialPageRoute(builder: (_) => const Scaffold(body: Center(child: Text('Gestão de Produtos'))));
+        return MaterialPageRoute(builder: (_) => const AdminProductsPage());
       case '/admin/atendentes':
-        return MaterialPageRoute(builder: (_) => const Scaffold(body: Center(child: Text('Gestão de Atendentes'))));
+        return MaterialPageRoute(builder: (_) => const AdminAttendantsPage());
       case '/admin/relatorios':
-        return MaterialPageRoute(builder: (_) => const Scaffold(body: Center(child: Text('Relatórios'))));
+        return MaterialPageRoute(builder: (_) => const AdminReportsPage());
+      case '/pedidos/novo':
+        return MaterialPageRoute(builder: (_) => const CreateOrderPage());
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(

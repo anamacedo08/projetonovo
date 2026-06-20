@@ -22,6 +22,7 @@ Future<void> main() async {
     debugPrint("Firebase não inicializado: $e");
   }
 
+  // Garantir inicialização do banco antes de iniciar o app
   final dbService = DatabaseService();
   await dbService.database;
 
@@ -64,7 +65,13 @@ class HomeScreen extends StatelessWidget {
 
   Future<List<Map<String, dynamic>>> _loadProducts() async {
     final db = await DatabaseService().database;
-    return await db.query('products', where: 'excluido = 0', limit: 3);
+    // Verificação extra se a tabela existe
+    try {
+      return await db.query('products', where: 'excluido = 0', limit: 3);
+    } catch (e) {
+      debugPrint("Erro ao carregar produtos: $e");
+      return [];
+    }
   }
 
   @override
@@ -106,14 +113,14 @@ class HomeScreen extends StatelessWidget {
             ],
             if (papel == 'CLIENTE') ...[
               ListTile(
+                leading: const Icon(Icons.add_shopping_cart),
+                title: const Text('Novo Pedido'),
+                onTap: () => Navigator.pushNamed(context, '/pedidos/novo'),
+              ),
+              ListTile(
                 leading: const Icon(Icons.shopping_bag),
                 title: const Text('Meus Pedidos'),
                 onTap: () => Navigator.pushNamed(context, '/meus-pedidos'),
-              ),
-              ListTile(
-                leading: const Icon(Icons.person),
-                title: const Text('Perfil'),
-                onTap: () => Navigator.pushNamed(context, '/perfil'),
               ),
             ],
             if (papel == 'ADMIN') ...[
@@ -133,13 +140,6 @@ class HomeScreen extends StatelessWidget {
                 onTap: () => Navigator.pushNamed(context, '/admin/relatorios'),
               ),
             ],
-            if (papel == 'ATENDENTE') ...[
-              ListTile(
-                leading: const Icon(Icons.list_alt),
-                title: const Text('Pedidos Pendentes'),
-                onTap: () => Navigator.pushNamed(context, '/atendente/pedidos'),
-              ),
-            ],
             if (papel != 'VISITANTE')
               ListTile(
                 leading: const Icon(Icons.logout),
@@ -157,9 +157,6 @@ class HomeScreen extends StatelessWidget {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
-          }
-          if (snapshot.hasError) {
-            return Center(child: Text('Erro: ${snapshot.error}'));
           }
           final products = snapshot.data ?? [];
           if (products.isEmpty) {
