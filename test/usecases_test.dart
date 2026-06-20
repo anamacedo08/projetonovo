@@ -5,13 +5,19 @@ import 'package:projetonovo/features/orders/domain/usecases/update_order_status_
 import 'package:projetonovo/core/database/database_service.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'dart:io';
+import 'package:path/path.dart';
 
 void main() {
   setUpAll(() async {
     sqfliteFfiInit();
     databaseFactory = databaseFactoryFfi;
     try { await dotenv.load(); } catch (_) {}
+  });
+
+  setUp(() async {
+    final dbPath = join(await getDatabasesPath(), 'artesanal.db');
+    await DatabaseService.reset();
+    await deleteDatabase(dbPath);
   });
 
   group('RegisterClientUseCase Tests', () {
@@ -29,11 +35,13 @@ void main() {
 
     test('Should throw exception if email already exists', () async {
       final useCase = RegisterClientUseCase();
-      final dados = {'email': 'novo@cliente.com', 'password': '123'};
+      final dados = {'email': 'admin@artesanal.com', 'password': '123'};
       
       expect(() => useCase.executar(dados), throwsException);
     });
-   group('Order UseCases Tests', () {
+  });
+
+  group('Order UseCases Tests', () {
     test('Should create an order successfully', () async {
       final createUseCase = CreateOrderUseCase();
       final dadosPedido = {'itens': ['Produto 1'], 'valor_total': 100.0};
@@ -47,6 +55,10 @@ void main() {
     });
 
     test('Should update order status with valid transition', () async {
+      // First create an order
+      final createUseCase = CreateOrderUseCase();
+      await createUseCase.executar(1, {'itens': ['P1'], 'valor_total': 10.0}, {'rua': 'R1'});
+      
       final db = await DatabaseService().database;
       final orderId = (await db.query('orders')).first['id'] as int;
       
@@ -58,13 +70,15 @@ void main() {
     });
 
     test('Should fail to update order status with invalid transition', () async {
+      final createUseCase = CreateOrderUseCase();
+      await createUseCase.executar(1, {'itens': ['P1'], 'valor_total': 10.0}, {'rua': 'R1'});
+
       final db = await DatabaseService().database;
       final orderId = (await db.query('orders')).first['id'] as int;
       
       final updateUseCase = UpdateOrderStatusUseCase();
-      // Transição direta de EM_FABRICACAO para AGUARDANDO_INICIO não é definida como válida
-      expect(() => updateUseCase.executar(orderId, 'AGUARDANDO_INICIO'), throwsException);
+      // Transição de AGUARDANDO_INICIO direto para ENVIADO deve falhar (exige EM_FABRICACAO primeiro)
+      expect(() => updateUseCase.executar(orderId, 'ENVIADO'), throwsException);
     });
   });
-});
 }

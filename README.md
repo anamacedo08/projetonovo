@@ -1,38 +1,26 @@
-# Artesanal App
+# ArtesaLab
 
-Sistema para gestão artesanal com suporte a Flutter Web e Mobile.
+Sistema para gestão de produtos artesanais.
 
 ## Tecnologias
 - Flutter
 - SQLite (Sqflite)
 - Firebase (Messaging)
 - Provider (Gestão de Estado)
-- DotEnv (Configurações)
 
 ## Configuração
-1. Instale as dependências:
-   ```bash
-   flutter pub get
-   ```
-2. Configure o arquivo `.env` com suas chaves:
-   ```env
-   APP_ENV=development
-   DB_NAME=artesanal.db
-   DB_VERSION=1
-   ```
-3. Execute o projeto:
-   ```bash
-   flutter run -d chrome # Para Web
-   ```
+1. Instale as dependências: `flutter pub get`
+2. Execute o app: `flutter run`
+
+## Funcionalidades
+- **Vitrine Dinâmica**: Visualização de produtos artesanais cadastrados no banco.
+- **Login e Cadastro**: Telas dedicadas para autenticação e registro de novos clientes.
+- **Menu por Perfil**: Opções de navegação variam de acordo com o nível de acesso (Admin, Atendente, Cliente, Visitante).
+- **Gestão de Pedidos**: Fluxo completo desde a criação até a atualização de status (Backend simulado).
 
 ## Testes
-Para executar os testes automatizados:
+Para garantir a estabilidade do sistema, execute:
 ```bash
 flutter test
 ```
-
-## Arquitetura
-O projeto segue os princípios da Clean Architecture, com separação clara entre Domain, Core e Presentation.
-- **Core**: Serviços base como Banco de Dados e Autenticação.
-- **Features**: Funcionalidades isoladas com seus próprios UseCases e Controllers.
-- **App**: Configurações globais e rotas.
+Os testes cobrem persistência, lógica de negócio e autenticação.

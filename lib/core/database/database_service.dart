@@ -1,6 +1,7 @@
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter/foundation.dart';
 
 class DatabaseService {
   static final DatabaseService _instance = DatabaseService._internal();
@@ -9,6 +10,14 @@ class DatabaseService {
   factory DatabaseService() => _instance;
 
   DatabaseService._internal();
+
+  @visibleForTesting
+  static Future<void> reset() async {
+    if (_instance._database != null) {
+      await _instance._database!.close();
+      _instance._database = null;
+    }
+  }
 
   Future<Database> get database async {
     if (_database != null) return _database!;
@@ -28,6 +37,7 @@ class DatabaseService {
       onCreate: (db, version) async {
         await _executarScriptCriacaoTabelas(db);
         await _semearAdminRoot(db);
+        await _semearProdutosVitrine(db);
       },
       onUpgrade: (db, oldVersion, newVersion) async {
         await _executarScriptsMigracao(db);
@@ -50,6 +60,8 @@ class DatabaseService {
       CREATE TABLE products (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         nome TEXT,
+        descricao TEXT,
+        imagem TEXT,
         preco REAL,
         excluido INTEGER DEFAULT 0
       )
@@ -71,11 +83,31 @@ class DatabaseService {
   }
 
   Future<void> _semearAdminRoot(Database db) async {
-    // Nota: Em um sistema real, usaríamos um hash real para a senha.
     await db.insert('users', {
       'role': 'admin',
       'email': 'admin@artesanal.com',
       'password_hash': 'senhaPadraoHash' 
+    });
+  }
+
+  Future<void> _semearProdutosVitrine(Database db) async {
+    await db.insert('products', {
+      'nome': 'Vaso de Cerâmica',
+      'descricao': 'Vaso feito à mão com acabamento rústico.',
+      'imagem': 'assets/vaso.png',
+      'preco': 45.0
+    });
+    await db.insert('products', {
+      'nome': 'Cesto de Palha',
+      'descricao': 'Cesto trançado ideal para organização.',
+      'imagem': 'assets/cesto.png',
+      'preco': 30.0
+    });
+    await db.insert('products', {
+      'nome': 'Luminária de Macramê',
+      'descricao': 'Luminária artesanal para ambientes modernos.',
+      'imagem': 'assets/luminaria.png',
+      'preco': 60.0
     });
   }
 

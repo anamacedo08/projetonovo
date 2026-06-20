@@ -26,8 +26,8 @@ class AuthService extends ChangeNotifier {
     return false;
   }
 
-  String? obterNivelAcesso() {
-    return _usuarioAtual?['role']?.toString().toUpperCase();
+  String obterNivelAcesso() {
+    return _usuarioAtual?['role']?.toString().toUpperCase() ?? 'VISITANTE';
   }
 
   void logout() {

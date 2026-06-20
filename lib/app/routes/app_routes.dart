@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import '../../core/services/auth_service.dart';
+import '../../features/auth/presentation/pages/login_page.dart';
+import '../../features/auth/presentation/pages/register_page.dart';
 
 class AppRoutes {
   static Route<dynamic> gerarRota(RouteSettings settings, AuthService authService) {
     final papel = authService.obterNivelAcesso();
     final rotaDestino = settings.name;
 
-    // Lógica de proteção de rotas baseada na especificação
     if (rotaDestino != null && rotaDestino.startsWith('/admin') && papel != 'ADMIN') {
       return MaterialPageRoute(builder: (_) => const RotaAcessoNegado());
     }
@@ -15,12 +16,17 @@ class AppRoutes {
       return MaterialPageRoute(builder: (_) => const RotaAcessoNegado());
     }
 
-    // Mapeamento de rotas (simplificado para o exemplo)
     switch (rotaDestino) {
-      case '/':
-        return MaterialPageRoute(builder: (_) => const Scaffold(body: Center(child: Text('Home'))));
       case '/login':
-        return MaterialPageRoute(builder: (_) => const Scaffold(body: Center(child: Text('Login'))));
+        return MaterialPageRoute(builder: (_) => const LoginPage());
+      case '/cadastro':
+        return MaterialPageRoute(builder: (_) => const RegisterPage());
+      case '/admin/produtos':
+        return MaterialPageRoute(builder: (_) => const Scaffold(body: Center(child: Text('Gestão de Produtos'))));
+      case '/admin/atendentes':
+        return MaterialPageRoute(builder: (_) => const Scaffold(body: Center(child: Text('Gestão de Atendentes'))));
+      case '/admin/relatorios':
+        return MaterialPageRoute(builder: (_) => const Scaffold(body: Center(child: Text('Relatórios'))));
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(
