@@ -8,32 +8,41 @@ import 'core/services/notification_service.dart';
 import 'app/routes/app_routes.dart';
 
 Future<void> main() async {
+  // Garante que o binding do Flutter esteja inicializado
   WidgetsFlutterBinding.ensureInitialized();
 
+  // Carregamento de variáveis de ambiente
   try {
     await dotenv.load(fileName: ".env");
-  } catch (_) {
-    debugPrint(".env file not found, using fallbacks");
+  } catch (e) {
+    debugPrint("Aviso: Arquivo .env não encontrado. Usando fallbacks: $e");
   }
 
+  // Inicialização do Firebase (Resiliente)
   try {
+    // Só tenta inicializar se houver configuração (ou em modo debug/release se configurado)
     await Firebase.initializeApp();
   } catch (e) {
-    debugPrint("Firebase não inicializado: $e");
+    debugPrint("Firebase não configurado ou indisponível nesta plataforma: $e");
   }
 
-  // Garantir inicialização do banco antes de iniciar o app
+  // Inicialização do Banco de Dados
   try {
     final dbService = DatabaseService();
     await dbService.database;
   } catch (e) {
-    debugPrint("Erro fatal ao inicializar banco de dados: $e");
+    debugPrint("Erro ao inicializar banco de dados: $e");
   }
 
+  // Inicialização de Serviços
   final authService = AuthService();
-  
   final notificationService = NotificationService();
-  await notificationService.inicializar();
+  
+  try {
+    await notificationService.inicializar();
+  } catch (e) {
+    debugPrint("Erro não fatal ao inicializar notificações: $e");
+  }
 
   runApp(
     MultiProvider(
@@ -50,13 +59,16 @@ class ArtesaLabApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Usamos listen: true apenas onde for necessário reconstruir a UI por mudanças no Auth
     final authService = Provider.of<AuthService>(context);
 
     return MaterialApp(
       title: 'ArtesaLab',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
         primarySwatch: Colors.brown,
         useMaterial3: true,
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.brown),
       ),
       onGenerateRoute: (settings) => AppRoutes.gerarRota(settings, authService),
       home: const HomeScreen(),
@@ -122,7 +134,7 @@ class HomeScreen extends StatelessWidget {
               ),
               ListTile(
                 leading: const Icon(Icons.shopping_bag),
-                title: const Text('Meus Pedidos'),
+                title: const Text('Minhas Encomendas'),
                 onTap: () => Navigator.pushNamed(context, '/meus-pedidos'),
               ),
             ],
@@ -141,6 +153,13 @@ class HomeScreen extends StatelessWidget {
                 leading: const Icon(Icons.analytics),
                 title: const Text('Relatórios'),
                 onTap: () => Navigator.pushNamed(context, '/admin/relatorios'),
+              ),
+            ],
+            if (papel == 'ATENDENTE') ...[
+              ListTile(
+                leading: const Icon(Icons.list_alt),
+                title: const Text('Pedidos Pendentes'),
+                onTap: () => Navigator.pushNamed(context, '/atendente/pedidos'),
               ),
             ],
             if (papel != 'VISITANTE')

@@ -2,46 +2,54 @@ Aqui está a especificação técnica detalhada do sistema ArtesaLab, estruturad
 
 * /.env
 * ação: criar
-* descrição: Arquivo de definição estrita de variáveis de ambiente para a aplicação.
+* descrição: Arquivo de variáveis de ambiente.
 
 * /lib/main.dart
 * ação: criar
-* descrição: Ponto de entrada do aplicativo ArtesaLab. 
-* Inicialização: Garante que o `DatabaseService` esteja pronto antes de carregar a UI.
-* Tela Inicial (HomeScreen): Exibe vitrine de produtos e Menu Lateral dinâmico. Renderiza imagens com segurança para links nulos ou URLs externas.
+* descrição: Ponto de entrada do aplicativo. 
+* Inicialização: DEVE ser resiliente a falhas em serviços externos (Firebase, etc). Se um serviço falhar, o app deve prosseguir para o `runApp`.
+* Robustez: O carregamento do banco de dados e serviços core deve ser concluído antes da exibição da UI principal para evitar telas pretas ou em branco.
 
 * /lib/core/database/database_service.dart
 * ação: criar
-* descrição: Singleton para SQLite. Tabelas `users`, `products` e `orders` criadas com `IF NOT EXISTS`. 
-* Schema `users`: DEVE conter a coluna `ativo` (INTEGER DEFAULT 1).
-* Schema `products`: DEVE conter a coluna `imagem` (TEXT).
-* Schema `orders`: DEVE conter a coluna `descricao_pedido` (TEXT).
-* Evolução: O script de inicialização deve garantir que todas as colunas necessárias existam via `ALTER TABLE` se necessário.
+* descrição: Singleton para SQLite. Gerencia tabelas e persistência.
+
+* /lib/core/services/notification_service.dart
+* ação: criar
+* descrição: Serviço de notificações. DEVE verificar se o Firebase foi inicializado corretamente antes de tentar acessar qualquer instância do FCM para evitar erros fatais.
 
 * /lib/features/auth/presentation/pages/login_page.dart
 * ação: criar
-* descrição: Tela de login funcional.
+* descrição: Login funcional.
 
 * /lib/features/auth/presentation/pages/register_page.dart
-* ação: criar
-* descrição: Tela de cadastro de clientes.
+* action: criar
+* descrição: Cadastro de clientes.
 
 * /lib/features/products/presentation/pages/admin_products_page.dart
 * ação: criar
-* descrição: CRUD completo de produtos para administradores. Permite informar link da imagem (URL) e visualiza a miniatura.
+* descrição: CRUD de produtos.
 
 * /lib/features/auth/presentation/pages/admin_attendants_page.dart
 * ação: criar
-* descrição: CRUD completo de atendentes para administradores. Garante a persistência na coluna `ativo`.
+* descrição: CRUD de atendentes.
 
 * /lib/features/reports/presentation/pages/admin_reports_page.dart
 * ação: criar
-* descrição: Dashboard financeiro para administradores.
+* descrição: Relatórios operacionais.
 
 * /lib/features/orders/presentation/pages/create_order_page.dart
 * ação: criar
-* descrição: Fluxo de encomenda sob medida. Permite ao cliente descrever o produto personalizado, endereço e contato.
+* descrição: Encomenda sob medida.
+
+* /lib/features/orders/presentation/pages/my_orders_page.dart
+* ação: criar
+* descrição: Visualização de encomendas pelo cliente.
+
+* /lib/features/orders/presentation/pages/attendant_orders_page.dart
+* ação: criar
+* descrição: Gestão de status de pedidos pelo atendente.
 
 * /lib/app/routes/app_routes.dart
 * ação: criar
-* descrição: Roteamento dinâmico e seguro.
+* descrição: Roteamento.

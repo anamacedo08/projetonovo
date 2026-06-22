@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sqflite/sqflite.dart';
 import '../../../../core/database/database_service.dart';
 import '../../domain/usecases/manage_products_usecase.dart';
 

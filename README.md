@@ -2,18 +2,16 @@
 
 Sistema completo para gestão de produtos artesanais.
 
-## Soluções Implementadas
-- **Resiliência de Dados**: Correção do schema do banco de dados (colunas `ativo` em `users` e `descricao_pedido` em `orders`).
-- **Renderização de Mídia**: Correção do erro de carregamento de imagens na vitrine inicial, com suporte a URLs externas.
-- **Área Administrativa**: 
-    - **CRUD de Produtos**: Gerenciamento funcional com suporte a links de imagem.
-    - **CRUD de Atendentes**: Cadastro e inativação de atendentes corrigidos.
-- **Área do Cliente**: Encomendas sob medida com descrição personalizada.
+## Soluções de Robustez
+- **Inicialização Resiliente**: O aplicativo agora inicializa corretamente mesmo se o Firebase não estiver configurado, evitando a tela preta no startup.
+- **Verificação de Firebase**: O `NotificationService` valida a existência do app Firebase antes de acessar o FCM.
+- **Schema Consistente**: Tabelas `users` e `orders` garantem a existência das colunas `ativo` e `descricao_pedido` respectivamente.
 
 ## Tecnologias
 - Flutter
 - SQLite (Sqflite)
 - Provider
+- Firebase (Opcional no startup)
 
 ## Execução
 1. `flutter pub get`
@@ -21,5 +19,3 @@ Sistema completo para gestão de produtos artesanais.
 
 ## Testes
 `flutter test`
-- `flutter test test/core_test.dart`
-- `flutter test test/usecases_test.dart`

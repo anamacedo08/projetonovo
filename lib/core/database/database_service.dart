@@ -86,22 +86,7 @@ class DatabaseService {
         FOREIGN KEY (cliente_id) REFERENCES users (id)
       )
     ''');
-    
-    // Garantir que a coluna ativo existe na tabela users se ela já existia
-    try {
-      await db.execute('ALTER TABLE users ADD COLUMN ativo INTEGER DEFAULT 1');
-    } catch (_) {}
 
-    // Garantir que a coluna descricao_pedido existe se a tabela já existia (migração manual simplificada)
-    try {
-      await db.execute('ALTER TABLE orders ADD COLUMN descricao_pedido TEXT');
-    } catch (_) {}
-    try {
-      await db.execute('ALTER TABLE orders ADD COLUMN endereco_entrega TEXT');
-    } catch (_) {}
-    try {
-      await db.execute('ALTER TABLE orders ADD COLUMN numero_contato TEXT');
-    } catch (_) {}
   }
 
   Future<void> _semearAdminRoot(Database db) async {
@@ -114,7 +99,7 @@ class DatabaseService {
       await db.insert('users', {
         'role': 'admin',
         'email': 'admin@artesanal.com',
-        'password_hash': 'senhaPadraoHash',
+        'password_hash': '123',
         'ativo': 1
       });
     }

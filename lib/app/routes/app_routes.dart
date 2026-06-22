@@ -6,6 +6,8 @@ import '../../features/auth/presentation/pages/admin_attendants_page.dart';
 import '../../features/products/presentation/pages/admin_products_page.dart';
 import '../../features/reports/presentation/pages/admin_reports_page.dart';
 import '../../features/orders/presentation/pages/create_order_page.dart';
+import '../../features/orders/presentation/pages/my_orders_page.dart';
+import '../../features/orders/presentation/pages/attendant_orders_page.dart';
 
 class AppRoutes {
   static Route<dynamic> gerarRota(RouteSettings settings, AuthService authService) {
@@ -33,6 +35,10 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => const AdminReportsPage());
       case '/pedidos/novo':
         return MaterialPageRoute(builder: (_) => const CreateOrderPage());
+      case '/meus-pedidos':
+        return MaterialPageRoute(builder: (_) => const MyOrdersPage());
+      case '/atendente/pedidos':
+        return MaterialPageRoute(builder: (_) => const AttendantOrdersPage());
       default:
         return MaterialPageRoute(
           builder: (_) => Scaffold(
