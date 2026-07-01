@@ -1,55 +1,64 @@
-Aqui está a especificação técnica detalhada do sistema ArtesaLab, estruturada conforme o formato e os padrões arquiteturais exigidos.
+Aqui está a especificação técnica detalhada do sistema ArtesaLab, otimizada com padrões arquiteturais modernos.
 
 * /.env
 * ação: criar
-* descrição: Arquivo de definição estrita de variáveis de ambiente para a aplicação.
+* descrição: Arquivo de variáveis de ambiente.
 
 * /lib/main.dart
 * ação: criar
-* descrição: Ponto de entrada do aplicativo ArtesaLab. 
-* Inicialização: Garante que o `DatabaseService` esteja pronto antes de carregar a UI.
-* Tela Inicial (HomeScreen): Exibe vitrine de produtos e Menu Lateral dinâmico. Renderiza imagens com segurança para links nulos ou URLs externas.
+* descrição: Ponto de entrada do aplicativo. 
+* Inicialização: Resiliente a falhas no Firebase.
+* UI: Modularizada através de widgets reutilizáveis (`AppDrawer`, `ProductCard`).
+* Cache: Utiliza cache em memória para a vitrine de produtos através do `ProductRepository`.
 
 * /lib/core/database/database_service.dart
 * ação: criar
-* descrição: Singleton para SQLite. Tabelas `users`, `products` e `orders` criadas com `IF NOT EXISTS`. 
-* Schema `users`: DEVE conter a coluna `ativo` (INTEGER DEFAULT 1).
-* Schema `products`: DEVE conter a coluna `imagem` (TEXT).
-* Schema `orders`: DEVE conter a coluna `descricao_pedido` (TEXT), `status` (TEXT), `dados_logistica` (TEXT).
-* Evolução: O script de inicialização deve garantir que todas as colunas necessárias existam via `ALTER TABLE` se necessário.
+* descrição: Gerenciador de conexão SQLite (Singleton). Delega criação de tabelas para `DatabaseSchema`.
+
+* /lib/core/database/database_schema.dart (NOVO)
+* ação: criar
+* descrição: Define o schema das tabelas e a lógica de seeding inicial.
+
+* /lib/core/database/base_repository.dart (NOVO)
+* ação: criar
+* descrição: Classe abstrata para operações genéricas de CRUD no banco de dados.
+
+* /lib/features/*/domain/repositories/ (NOVO)
+* ação: criar
+* descrição: Repositórios especializados para `users`, `products` e `orders`, centralizando o acesso a dados e implementando estratégias de cache.
 
 * /lib/features/auth/presentation/pages/login_page.dart
 * ação: criar
-* descrição: Tela de login funcional.
+* descrição: Login funcional.
 
 * /lib/features/auth/presentation/pages/register_page.dart
 * ação: criar
-* descrição: Tela de cadastro de clientes.
+* descrição: Cadastro de clientes.
 
 * /lib/features/products/presentation/pages/admin_products_page.dart
 * ação: criar
-* descrição: CRUD completo de produtos para administradores. Permite informar link da imagem (URL) e visualiza a miniatura.
+* descrição: CRUD de produtos para administradores.
 
 * /lib/features/auth/presentation/pages/admin_attendants_page.dart
 * ação: criar
-* descrição: CRUD completo de atendentes para administradores. Garante a persistência na coluna `ativo`.
+* descrição: CRUD de atendentes para administradores.
 
 * /lib/features/reports/presentation/pages/admin_reports_page.dart
 * ação: criar
-* descrição: Dashboard financeiro para administradores.
+* descrição: Dashboard analítico.
 
 * /lib/features/orders/presentation/pages/create_order_page.dart
 * ação: criar
-* descrição: Fluxo de encomenda sob medida. Permite ao cliente descrever o produto personalizado, endereço e contato.
+* descrição: Fluxo de encomenda sob medida.
 
 * /lib/features/orders/presentation/pages/my_orders_page.dart
 * ação: criar
-* descrição: Tela exclusiva para clientes visualizarem o histórico de seus pedidos e o status atual de cada um.
+* descrição: Histórico de pedidos do cliente.
 
 * /lib/features/orders/presentation/pages/attendant_orders_page.dart
 * ação: criar
-* descrição: Tela de gestão de pedidos para o atendente. Permite visualizar pedidos pendentes, mudar status para "EM FABRICAÇÃO" e "ENVIADO" (solicitando código de rastreio).
+* descrição: Gestão operacional de pedidos pelo atendente.
 
 * /lib/app/routes/app_routes.dart
 * ação: criar
-* descrição: Roteamento dinâmico e seguro. Mapeia novas telas de pedidos.
+* descrição: Roteamento dinâmico e seguro.

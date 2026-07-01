@@ -1,29 +1,20 @@
-import '../../../../core/database/database_service.dart';
+import '../repositories/user_repository.dart';
 
 class RegisterClientUseCase {
-  final DatabaseService _dbService = DatabaseService();
+  final UserRepository _repository = UserRepository();
 
   Future<void> executar(Map<String, dynamic> dadosCliente) async {
-    final db = await _dbService.database;
-    
-    // Verificar se email já existe
-    final List<Map<String, dynamic>> existing = await db.query(
-      'users',
-      where: 'email = ?',
-      whereArgs: [dadosCliente['email']],
-    );
+    final existing = await _repository.findByEmail(dadosCliente['email']);
 
-    if (existing.isNotEmpty) {
+    if (existing != null) {
       throw Exception('ErroConflito: Email já cadastrado');
     }
 
-    // Hash simplificado conforme spec
-    final String hash = dadosCliente['password']; // Em produção, encriptar
-
-    await db.insert('users', {
+    await _repository.insert({
       'email': dadosCliente['email'],
-      'password_hash': hash,
+      'password_hash': dadosCliente['password'],
       'role': 'CLIENTE',
+      'ativo': 1,
     });
   }
 }

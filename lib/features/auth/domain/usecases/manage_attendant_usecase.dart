@@ -1,12 +1,9 @@
-import '../../../../core/database/database_service.dart';
+import '../repositories/user_repository.dart';
 
 class ManageAttendantUseCase {
-  final DatabaseService _dbService = DatabaseService();
+  final UserRepository _repository = UserRepository();
 
   Future<void> criarAtendente(Map<String, dynamic> dados) async {
-    final db = await _dbService.database;
-    
-    // Validar campos obrigatórios
     if (dados['email'] == null || dados['email'].isEmpty) {
       throw Exception('Email é obrigatório');
     }
@@ -14,18 +11,16 @@ class ManageAttendantUseCase {
       throw Exception('Senha é obrigatória');
     }
 
-    await db.insert('users', {
+    await _repository.insert({
       'email': dados['email'],
-      'password_hash': dados['password'], // Em produção, usar hash
+      'password_hash': dados['password'],
       'role': 'ATENDENTE',
       'ativo': 1,
     });
   }
 
   Future<void> inativarAtendente(int id) async {
-    final db = await _dbService.database;
-    await db.update(
-      'users',
+    await _repository.update(
       {'ativo': 0},
       where: 'id = ?',
       whereArgs: [id],

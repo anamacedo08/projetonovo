@@ -1,13 +1,13 @@
-# Plano de Testes e Relatório de Estabilização - ArtesaLab
+# Plano de Testes e Relatório de Estabilização - ArtesaLab (Otimizado)
 
-## Novos Cenários de Teste (Fluxo de Pedidos)
+## Novos Cenários de Teste (Refatoração e Cache)
 
-### 1. Gestão de Pedidos pelo Atendente
-- **Cenário 1 (Iniciar Fabricação)**: Validar se o atendente consegue visualizar pedidos com status "AGUARDANDO_INICIO" e alterá-los para "EM_FABRICACAO".
-- **Cenário 2 (Enviar Pedido)**: Validar se o atendente consegue alterar o status de "EM_FABRICACAO" para "ENVIADO" e se o sistema exige o código de rastreio.
+### 1. Performance e Cache
+- **Cenário 1 (Cache de Vitrine)**: Validar se o `ProductRepository` retorna dados em cache após a primeira consulta, evitando acessos desnecessários ao banco.
+- **Cenário 2 (Invalidação de Cache)**: Garantir que o cache é limpo ao cadastrar ou excluir um produto, forçando a atualização da vitrine na Home.
 
-### 2. Histórico de Pedidos pelo Cliente
-- **Cenário 3 (Visualizar Pedidos)**: Garantir que o cliente veja apenas os seus próprios pedidos na tela "Meus Pedidos" com o status atualizado corretamente.
+### 2. Integridade de Repositórios
+- **Cenário 3 (BaseRepository)**: Validar se as operações genéricas de insert/query funcionam para todas as tabelas.
 
 ---
 
@@ -16,9 +16,7 @@
 - **Testes de Use Cases**: `test/usecases_test.dart` -> **PASSOU**
 
 ## Cobertura e Validações
-### 1. Funcionalidades Corrigidas
-- [x] Schema `users` com coluna `ativo`.
-- [x] Renderização de imagens de produtos funcional.
-- [x] Fluxo de cadastro de atendentes funcional.
-- [x] Tela de gestão de pedidos para Atendentes funcional.
-- [x] Histórico de pedidos para Clientes funcional com exibição de status.
+### 1. Arquitetura Otimizada
+- [x] Repositórios com cache em memória implementados.
+- [x] Schema centralizado e modular.
+- [x] UI desacoplada do `main.dart`.

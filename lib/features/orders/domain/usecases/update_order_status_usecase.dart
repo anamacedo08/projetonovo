@@ -1,18 +1,12 @@
-import '../../../../core/database/database_service.dart';
 import '../../../../core/services/notification_service.dart';
+import '../repositories/order_repository.dart';
 
 class UpdateOrderStatusUseCase {
-  final DatabaseService _dbService = DatabaseService();
+  final OrderRepository _repository = OrderRepository();
   final NotificationService _notificationService = NotificationService();
 
   Future<void> executar(int idPedido, String novoStatus, {Map<String, dynamic>? dadosLogistica}) async {
-    final db = await _dbService.database;
-    
-    final List<Map<String, dynamic>> orders = await db.query(
-      'orders',
-      where: 'id = ?',
-      whereArgs: [idPedido],
-    );
+    final orders = await _repository.query(where: 'id = ?', whereArgs: [idPedido]);
 
     if (orders.isEmpty) throw Exception('Pedido não encontrado');
     
@@ -34,8 +28,7 @@ class UpdateOrderStatusUseCase {
       throw Exception('ErroTransicaoInvalida: Transição de $statusAtual para $novoStatus não permitida');
     }
 
-    await db.update(
-      'orders',
+    await _repository.update(
       {
         'status': novoStatus,
         'dados_logistica': dadosLogistica?.toString() ?? pedido['dados_logistica'],

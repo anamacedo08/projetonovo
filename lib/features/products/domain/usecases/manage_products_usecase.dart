@@ -1,23 +1,24 @@
-import '../../../../core/database/database_service.dart';
+import '../repositories/product_repository.dart';
 
 class ManageProductsUseCase {
-  final DatabaseService _dbService = DatabaseService();
+  final ProductRepository _repository = ProductRepository();
 
   Future<void> salvarProduto(Map<String, dynamic> produto) async {
-    final db = await _dbService.database;
-    
     if (produto['id'] == null) {
-      await db.insert('products', {
+      await _repository.insert({
         'nome': produto['nome'],
+        'descricao': produto['descricao'],
         'preco': produto['preco'],
+        'imagem': produto['imagem'],
         'excluido': 0,
       });
     } else {
-      await db.update(
-        'products',
+      await _repository.update(
         {
           'nome': produto['nome'],
+          'descricao': produto['descricao'],
           'preco': produto['preco'],
+          'imagem': produto['imagem'],
         },
         where: 'id = ?',
         whereArgs: [produto['id']],
@@ -26,9 +27,7 @@ class ManageProductsUseCase {
   }
 
   Future<void> exclusaoLogica(int id) async {
-    final db = await _dbService.database;
-    await db.update(
-      'products',
+    await _repository.update(
       {'excluido': 1},
       where: 'id = ?',
       whereArgs: [id],

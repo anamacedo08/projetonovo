@@ -1,4 +1,4 @@
-Aqui está a especificação técnica detalhada do sistema ArtesaLab, estruturada conforme o formato e os padrões arquiteturais exigidos.
+Aqui está a especificação técnica detalhada do sistema ArtesaLab, otimizada com padrões arquiteturais modernos.
 
 * /.env
 * ação: criar
@@ -7,24 +7,37 @@ Aqui está a especificação técnica detalhada do sistema ArtesaLab, estruturad
 * /lib/main.dart
 * ação: criar
 * descrição: Ponto de entrada do aplicativo. 
-* Inicialização: Garante que o `DatabaseService` esteja pronto.
-* HomeScreen: Vitrine e Drawer dinâmico com links para gestão de pedidos.
+* Inicialização: Resiliente a falhas no Firebase.
+* UI: Modularizada através de widgets reutilizáveis (`AppDrawer`, `ProductCard`).
+* Cache: Utiliza cache em memória para a vitrine de produtos através do `ProductRepository`.
 
 * /lib/core/database/database_service.dart
 * ação: criar
-* descrição: Singleton para SQLite. Gerencia persistência de usuários, produtos e encomendas.
+* descrição: Gerenciador de conexão SQLite (Singleton). Delega criação de tabelas para `DatabaseSchema`.
+
+* /lib/core/database/database_schema.dart (NOVO)
+* ação: criar
+* descrição: Define o schema das tabelas e a lógica de seeding inicial.
+
+* /lib/core/database/base_repository.dart (NOVO)
+* ação: criar
+* descrição: Classe abstrata para operações genéricas de CRUD no banco de dados.
+
+* /lib/features/*/domain/repositories/ (NOVO)
+* ação: criar
+* descrição: Repositórios especializados para `users`, `products` e `orders`, centralizando o acesso a dados e implementando estratégias de cache.
 
 * /lib/features/auth/presentation/pages/login_page.dart
 * ação: criar
-* descrição: Tela de login funcional.
+* descrição: Login funcional.
 
 * /lib/features/auth/presentation/pages/register_page.dart
 * ação: criar
-* descrição: Tela de cadastro de clientes.
+* descrição: Cadastro de clientes.
 
 * /lib/features/products/presentation/pages/admin_products_page.dart
 * ação: criar
-* descrição: CRUD de produtos para administradores com suporte a links de imagens.
+* descrição: CRUD de produtos para administradores.
 
 * /lib/features/auth/presentation/pages/admin_attendants_page.dart
 * ação: criar
@@ -32,7 +45,7 @@ Aqui está a especificação técnica detalhada do sistema ArtesaLab, estruturad
 
 * /lib/features/reports/presentation/pages/admin_reports_page.dart
 * ação: criar
-* descrição: Dashboard financeiro e operacional.
+* descrição: Dashboard analítico.
 
 * /lib/features/orders/presentation/pages/create_order_page.dart
 * ação: criar
@@ -40,11 +53,11 @@ Aqui está a especificação técnica detalhada do sistema ArtesaLab, estruturad
 
 * /lib/features/orders/presentation/pages/my_orders_page.dart
 * ação: criar
-* descrição: Visualização do histórico de pedidos do cliente com status atualizado.
+* descrição: Histórico de pedidos do cliente.
 
 * /lib/features/orders/presentation/pages/attendant_orders_page.dart
 * ação: criar
-* descrição: Gestão operacional de pedidos pelo atendente (Mudança de status e código de rastreio).
+* descrição: Gestão operacional de pedidos pelo atendente.
 
 * /lib/app/routes/app_routes.dart
 * ação: criar

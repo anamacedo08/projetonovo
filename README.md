@@ -1,17 +1,18 @@
-# ArtesaLab
+# ArtesaLab (Refatorado)
 
-Sistema completo para gestão de produtos artesanais.
+Sistema completo para gestão de produtos artesanais, otimizado para performance e manutenibilidade.
 
-## Soluções Implementadas
-- **Fluxo do Atendente**: Nova tela para gestão de pedidos, permitindo mudar o status para "EM FABRICAÇÃO" e "ENVIADO" com inclusão de código de rastreio.
-- **Histórico do Cliente**: Tela "Meus Pedidos" com acompanhamento em tempo real do status das encomendas.
-- **Área Administrativa**: CRUD de produtos e atendentes totalmente operacional.
-- **Resiliência de Dados**: Schema SQLite aprimorado para garantir integridade das informações de pedidos e usuários.
+## Melhorias de Arquitetura
+- **Repository Pattern**: Centralização do acesso a dados e desacoplamento da camada de banco de dados.
+- **Caching**: Implementação de cache em memória para a vitrine de produtos, reduzindo latência de I/O.
+- **Modularização de UI**: Componentes comuns como Drawer e Cards extraídos para widgets independentes.
+- **Schema Modular**: Separação da definição de tabelas e seeding do gerenciador de conexão.
 
 ## Tecnologias
 - Flutter
 - SQLite (Sqflite)
 - Provider
+- Caching em Memória
 
 ## Execução
 1. `flutter pub get`
@@ -19,5 +20,3 @@ Sistema completo para gestão de produtos artesanais.
 
 ## Testes
 `flutter test`
-- `test/core_test.dart`
-- `test/usecases_test.dart`
