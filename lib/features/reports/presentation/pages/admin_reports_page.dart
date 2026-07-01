@@ -13,29 +13,43 @@ class AdminReportsPage extends StatelessWidget {
       body: FutureBuilder<Map<String, dynamic>>(
         future: useCase.executar(DateTime.now().subtract(const Duration(days: 30)), DateTime.now()),
         builder: (context, snapshot) {
-          if (!snapshot.hasData) return const Center(child: CircularProgressIndicator());
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (snapshot.hasError) {
+            return Center(child: Text('Erro: ${snapshot.error}'));
+          }
           final report = snapshot.data!;
           return Padding(
             padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            child: GridView.count(
+              crossAxisCount: 2,
+              crossAxisSpacing: 16,
+              mainAxisSpacing: 16,
               children: [
-                Card(
-                  child: ListTile(
-                    title: const Text('Faturamento Total'),
-                    subtitle: Text('R\$ ${report['faturamentoTotal']}'),
-                  ),
-                ),
-                Card(
-                  child: ListTile(
-                    title: const Text('Pedidos Concluídos'),
-                    subtitle: Text('${report['pedidosConcluidos']}'),
-                  ),
-                ),
+                _buildStatCard('Total de Pedidos', report['total'].toString(), Colors.blue),
+                _buildStatCard('Em Análise', report['emAnalise'].toString(), Colors.orange),
+                _buildStatCard('Em Fabricação', report['emFabricacao'].toString(), Colors.amber),
+                _buildStatCard('Enviados', report['enviados'].toString(), Colors.green),
+                _buildStatCard('Faturamento', 'R\$ ${report['faturamentoTotal']}', Colors.brown),
               ],
             ),
           );
         },
+      ),
+    );
+  }
+
+  Widget _buildStatCard(String title, String value, Color color) {
+    return Card(
+      elevation: 4,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(title, textAlign: TextAlign.center, style: const TextStyle(fontWeight: FontWeight.bold)),
+          const SizedBox(height: 8),
+          Text(value, style: TextStyle(fontSize: 20, color: color, fontWeight: FontWeight.bold)),
+        ],
       ),
     );
   }

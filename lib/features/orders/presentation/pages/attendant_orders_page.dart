@@ -46,6 +46,42 @@ class _AttendantOrdersPageState extends State<AttendantOrdersPage> {
     );
   }
 
+  void _showDetailsDialog(Map<String, dynamic> o) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Detalhes do Pedido #${o['id']}'),
+        content: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('Status:', style: TextStyle(fontWeight: FontWeight.bold)),
+              Text('${o['status']}'),
+              SizedBox(height: 8),
+              Text('Descrição:', style: TextStyle(fontWeight: FontWeight.bold)),
+              Text('${o['descricao_pedido'] ?? 'N/A'}'),
+              SizedBox(height: 8),
+              Text('Endereço:', style: TextStyle(fontWeight: FontWeight.bold)),
+              Text('${o['endereco_entrega'] ?? 'N/A'}'),
+              SizedBox(height: 8),
+              Text('Contato:', style: TextStyle(fontWeight: FontWeight.bold)),
+              Text('${o['numero_contato'] ?? 'N/A'}'),
+              if (o['dados_logistica'] != null) ...[
+                SizedBox(height: 8),
+                Text('Logística:', style: TextStyle(fontWeight: FontWeight.bold)),
+                Text('${o['dados_logistica']}'),
+              ],
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Fechar')),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -67,6 +103,7 @@ class _AttendantOrdersPageState extends State<AttendantOrdersPage> {
               return Card(
                 margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 child: ListTile(
+                  onTap: () => _showDetailsDialog(o),
                   title: Text('Pedido #${o['id']} - ${o['status']}'),
                   subtitle: Text('Descrição: ${o['descricao_pedido'] ?? 'N/A'}'),
                   trailing: _buildActions(o),

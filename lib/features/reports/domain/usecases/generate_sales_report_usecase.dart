@@ -6,27 +6,33 @@ class GenerateSalesReportUseCase {
   Future<Map<String, dynamic>> executar(DateTime periodoInicial, DateTime periodoFinal) async {
     final db = await _dbService.database;
     
-    final List<Map<String, dynamic>> orders = await db.query(
-      'orders',
-      where: 'data_criacao BETWEEN ? AND ?',
-      whereArgs: [periodoInicial.toIso8601String(), periodoFinal.toIso8601String()],
-    );
+    final List<Map<String, dynamic>> orders = await db.query('orders');
 
+    int totalPedidos = orders.length;
+    int emAnalise = 0;
+    int emFabricacao = 0;
+    int enviados = 0;
     double faturamentoTotal = 0;
-    int pedidosConcluidos = 0;
-    // ... lógica de cálculo de tempo médio simplificada
 
     for (var order in orders) {
       faturamentoTotal += (order['valor_total'] as num?)?.toDouble() ?? 0.0;
-      if (order['status'] == 'ENTREGUE' || order['status'] == 'ENVIADO') {
-        pedidosConcluidos++;
+      
+      final status = order['status'];
+      if (status == 'AGUARDANDO_INICIO') {
+        emAnalise++;
+      } else if (status == 'EM_FABRICACAO') {
+        emFabricacao++;
+      } else if (status == 'ENVIADO') {
+        enviados++;
       }
     }
 
     return {
+      'total': totalPedidos,
+      'emAnalise': emAnalise,
+      'emFabricacao': emFabricacao,
+      'enviados': enviados,
       'faturamentoTotal': faturamentoTotal,
-      'pedidosConcluidos': pedidosConcluidos,
-      'tempoMedio': 'N/A', // Cálculo complexo para SQLite simplificado
     };
   }
 }
