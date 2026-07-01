@@ -34,7 +34,7 @@ void main() {
   group('AuthService Tests', () {
     test('Login should succeed with correct credentials', () async {
       final authService = AuthService();
-      final success = await authService.login('admin@artesanal.com', 'senhaPadraoHash');
+      final success = await authService.login('admin@artesanal.com', '123');
       expect(success, true);
       expect(authService.obterNivelAcesso(), 'ADMIN');
     });

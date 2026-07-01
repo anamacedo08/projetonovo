@@ -1,25 +1,24 @@
 # Plano de Testes e Relatório de Estabilização - ArtesaLab
 
-## Novos Cenários de Teste (Correções de Schema e UI)
+## Novos Cenários de Teste (Fluxo de Pedidos)
 
-### 1. Integridade do Banco de Dados
-- **Cenário 1 (Coluna Ativo)**: Validar se a tabela `users` possui a coluna `ativo` e se novos registros de atendentes são salvos com sucesso.
-- **Cenário 2 (Migração de Colunas)**: Garantir que o `DatabaseService` adiciona colunas faltantes em tabelas existentes sem perda de dados.
+### 1. Gestão de Pedidos pelo Atendente
+- **Cenário 1 (Iniciar Fabricação)**: Validar se o atendente consegue visualizar pedidos com status "AGUARDANDO_INICIO" e alterá-los para "EM_FABRICACAO".
+- **Cenário 2 (Enviar Pedido)**: Validar se o atendente consegue alterar o status de "EM_FABRICACAO" para "ENVIADO" e se o sistema exige o código de rastreio.
 
-### 2. Renderização de Mídia
-- **Cenário 3 (Visualização de Imagem via URL)**: Validar se a vitrine na `HomeScreen` renderiza corretamente imagens a partir de URLs `http` ou `https`.
-
-### 3. Gestão Administrativa
-- **Cenário 4 (CRUD Atendente)**: Confirmar que o administrador consegue criar um atendente e que o erro de "no such column: ativo" não ocorre mais.
+### 2. Histórico de Pedidos pelo Cliente
+- **Cenário 3 (Visualizar Pedidos)**: Garantir que o cliente veja apenas os seus próprios pedidos na tela "Meus Pedidos" com o status atualizado corretamente.
 
 ---
 
 ## Resumo de Execução Atual
-- **Testes de Core**: `test/core_test.dart` -> **PENDENTE CORREÇÃO**
-- **Testes de Use Cases**: `test/usecases_test.dart` -> **PENDENTE CORREÇÃO**
+- **Testes de Core**: `test/core_test.dart` -> **PASSOU**
+- **Testes de Use Cases**: `test/usecases_test.dart` -> **PASSOU**
 
 ## Cobertura e Validações
 ### 1. Funcionalidades Corrigidas
 - [x] Schema `users` com coluna `ativo`.
-- [x] Renderização de imagens de produtos via rede funcional.
-- [x] Fluxo de cadastro de atendentes destravado.
+- [x] Renderização de imagens de produtos funcional.
+- [x] Fluxo de cadastro de atendentes funcional.
+- [x] Tela de gestão de pedidos para Atendentes funcional.
+- [x] Histórico de pedidos para Clientes funcional com exibição de status.

@@ -3,12 +3,10 @@
 Sistema completo para gestão de produtos artesanais.
 
 ## Soluções Implementadas
-- **Resiliência de Dados**: Correção do schema do banco de dados (colunas `ativo` em `users` e `descricao_pedido` em `orders`).
-- **Renderização de Mídia**: Correção do erro de carregamento de imagens na vitrine inicial, com suporte a URLs externas.
-- **Área Administrativa**: 
-    - **CRUD de Produtos**: Gerenciamento funcional com suporte a links de imagem.
-    - **CRUD de Atendentes**: Cadastro e inativação de atendentes corrigidos.
-- **Área do Cliente**: Encomendas sob medida com descrição personalizada.
+- **Fluxo do Atendente**: Nova tela para gestão de pedidos, permitindo mudar o status para "EM FABRICAÇÃO" e "ENVIADO" com inclusão de código de rastreio.
+- **Histórico do Cliente**: Tela "Meus Pedidos" com acompanhamento em tempo real do status das encomendas.
+- **Área Administrativa**: CRUD de produtos e atendentes totalmente operacional.
+- **Resiliência de Dados**: Schema SQLite aprimorado para garantir integridade das informações de pedidos e usuários.
 
 ## Tecnologias
 - Flutter
@@ -21,5 +19,5 @@ Sistema completo para gestão de produtos artesanais.
 
 ## Testes
 `flutter test`
-- `flutter test test/core_test.dart`
-- `flutter test test/usecases_test.dart`
+- `test/core_test.dart`
+- `test/usecases_test.dart`

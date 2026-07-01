@@ -15,7 +15,7 @@ Aqui está a especificação técnica detalhada do sistema ArtesaLab, estruturad
 * descrição: Singleton para SQLite. Tabelas `users`, `products` e `orders` criadas com `IF NOT EXISTS`. 
 * Schema `users`: DEVE conter a coluna `ativo` (INTEGER DEFAULT 1).
 * Schema `products`: DEVE conter a coluna `imagem` (TEXT).
-* Schema `orders`: DEVE conter a coluna `descricao_pedido` (TEXT).
+* Schema `orders`: DEVE conter a coluna `descricao_pedido` (TEXT), `status` (TEXT), `dados_logistica` (TEXT).
 * Evolução: O script de inicialização deve garantir que todas as colunas necessárias existam via `ALTER TABLE` se necessário.
 
 * /lib/features/auth/presentation/pages/login_page.dart
@@ -42,6 +42,14 @@ Aqui está a especificação técnica detalhada do sistema ArtesaLab, estruturad
 * ação: criar
 * descrição: Fluxo de encomenda sob medida. Permite ao cliente descrever o produto personalizado, endereço e contato.
 
+* /lib/features/orders/presentation/pages/my_orders_page.dart
+* ação: criar
+* descrição: Tela exclusiva para clientes visualizarem o histórico de seus pedidos e o status atual de cada um.
+
+* /lib/features/orders/presentation/pages/attendant_orders_page.dart
+* ação: criar
+* descrição: Tela de gestão de pedidos para o atendente. Permite visualizar pedidos pendentes, mudar status para "EM FABRICAÇÃO" e "ENVIADO" (solicitando código de rastreio).
+
 * /lib/app/routes/app_routes.dart
 * ação: criar
-* descrição: Roteamento dinâmico e seguro.
+* descrição: Roteamento dinâmico e seguro. Mapeia novas telas de pedidos.

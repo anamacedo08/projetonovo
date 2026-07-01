@@ -143,6 +143,13 @@ class HomeScreen extends StatelessWidget {
                 onTap: () => Navigator.pushNamed(context, '/admin/relatorios'),
               ),
             ],
+            if (papel == 'ATENDENTE') ...[
+              ListTile(
+                leading: const Icon(Icons.list_alt),
+                title: const Text('Gestão de Pedidos'),
+                onTap: () => Navigator.pushNamed(context, '/atendente/pedidos'),
+              ),
+            ],
             if (papel != 'VISITANTE')
               ListTile(
                 leading: const Icon(Icons.logout),

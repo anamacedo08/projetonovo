@@ -2,17 +2,17 @@ Aqui está a especificação técnica detalhada do sistema ArtesaLab, estruturad
 
 * /.env
 * ação: criar
-* descrição: Arquivo de definição estrita de variáveis de ambiente para a aplicação.
+* descrição: Arquivo de variáveis de ambiente.
 
 * /lib/main.dart
 * ação: criar
-* descrição: Ponto de entrada do aplicativo ArtesaLab. 
-* Inicialização: Garante que o `DatabaseService` esteja pronto antes de carregar a UI.
-* Tela Inicial (HomeScreen): Exibe vitrine de produtos e Menu Lateral dinâmico. Renderiza imagens com segurança para links externos.
+* descrição: Ponto de entrada do aplicativo. 
+* Inicialização: Garante que o `DatabaseService` esteja pronto.
+* HomeScreen: Vitrine e Drawer dinâmico com links para gestão de pedidos.
 
 * /lib/core/database/database_service.dart
 * ação: criar
-* descrição: Singleton para SQLite. Tabelas `users`, `products` e `orders` criadas com `IF NOT EXISTS`. Garante colunas `ativo` em `users` e `descricao_pedido` em `orders`.
+* descrição: Singleton para SQLite. Gerencia persistência de usuários, produtos e encomendas.
 
 * /lib/features/auth/presentation/pages/login_page.dart
 * ação: criar
@@ -24,19 +24,27 @@ Aqui está a especificação técnica detalhada do sistema ArtesaLab, estruturad
 
 * /lib/features/products/presentation/pages/admin_products_page.dart
 * ação: criar
-* descrição: CRUD completo de produtos para administradores. Suporte a URLs de imagem.
+* descrição: CRUD de produtos para administradores com suporte a links de imagens.
 
 * /lib/features/auth/presentation/pages/admin_attendants_page.dart
 * ação: criar
-* descrição: CRUD completo de atendentes para administradores.
+* descrição: CRUD de atendentes para administradores.
 
 * /lib/features/reports/presentation/pages/admin_reports_page.dart
 * ação: criar
-* descrição: Dashboard financeiro para administradores.
+* descrição: Dashboard financeiro e operacional.
 
 * /lib/features/orders/presentation/pages/create_order_page.dart
 * ação: criar
-* descrição: Fluxo de encomenda sob medida. Sem seleção de produtos prévios.
+* descrição: Fluxo de encomenda sob medida.
+
+* /lib/features/orders/presentation/pages/my_orders_page.dart
+* ação: criar
+* descrição: Visualização do histórico de pedidos do cliente com status atualizado.
+
+* /lib/features/orders/presentation/pages/attendant_orders_page.dart
+* ação: criar
+* descrição: Gestão operacional de pedidos pelo atendente (Mudança de status e código de rastreio).
 
 * /lib/app/routes/app_routes.dart
 * ação: criar
